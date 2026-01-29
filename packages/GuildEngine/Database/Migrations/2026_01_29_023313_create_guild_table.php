@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('guilds', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
+            $table->text('description');
             $table->bigInteger('user_id')->index();
             $table->timestamps();
         });

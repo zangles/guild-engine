@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property string $name
- * @property int $userId
+ * @property string $description
+ * @property int $user_id
  */
 final class Guild extends Model
 {
@@ -22,6 +23,7 @@ final class Guild extends Model
      */
     protected $fillable = [
         'name',
+        'description',
         'user_id',
     ];
 

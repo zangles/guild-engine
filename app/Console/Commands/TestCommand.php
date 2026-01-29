@@ -27,10 +27,12 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        $data = CreateGuildDTO::make('hola', 1);
+        $data = CreateGuildDTO::make('hola2', 'mundo', 1);
         $action = app(CreateGuildAction::class);
 
-        $action->handle($data);
+        $a = $action->handle($data);
+
+        dd($a);
 
     }
 }

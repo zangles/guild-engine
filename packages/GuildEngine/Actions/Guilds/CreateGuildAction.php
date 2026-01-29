@@ -3,17 +3,28 @@
 namespace GuildEngine\Actions\Guilds;
 
 use GuildEngine\DTOs\CreateGuildDTO;
-use GuildEngine\Models\Guild;
+use GuildEngine\DTOs\GuildDTO;
+use GuildEngine\Exceptions\Guild\GuildNameAlradyExistsException;
+use GuildEngine\Finders\GuildFinder;
 use GuildEngine\Repositories\Guilds\GuildsRepositoryInterface;
 
 final class CreateGuildAction
 {
     public function __construct(
-        private readonly GuildsRepositoryInterface $guildsRepository
+        private readonly GuildsRepositoryInterface $guildsRepository,
+        private readonly GuildFinder $guildFinder,
     ) {}
 
-    public function handle(CreateGuildDTO $dto): Guild
+    /**
+     * @throws GuildNameAlradyExistsException
+     */
+    public function handle(CreateGuildDTO $dto): GuildDTO
     {
-        return $this->guildsRepository->save($dto);
+        if ($this->guildFinder->findByName($dto->name) !== null) {
+            throw new GuildNameAlradyExistsException();
+        }
+
+        $guild = $this->guildsRepository->save($dto);
+        return GuildDTO::fromModel($guild);
     }
 }
