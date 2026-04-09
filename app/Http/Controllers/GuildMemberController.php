@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\ApplicationServices\GuildMember\TransferLeadershipApplicationService;
 use App\Enums\GuildPermission;
+use App\Exceptions\CannotKickLeaderException;
+use App\Exceptions\InsufficientPermissionsException;
+use App\Exceptions\MemberAlreadyExistsException;
 use App\Finders\GuildMemberFinder;
 use App\Http\Requests\GuildMember\UpdateMemberRoleRequest;
 use App\Http\Resources\GuildMemberResource;
@@ -33,18 +36,47 @@ class GuildMemberController extends Controller
         private TransferLeadershipApplicationService $transferService,
     ) {}
 
+    public function me(Guild $guild): JsonResponse
+    {
+        $member = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
+
+        if (!$member) {
+            return response()->json(['message' => 'No eres miembro activo de este guild.'], 403);
+        }
+
+        return response()->json([
+            'id'          => $member->id,
+            'role'        => $member->role->name,
+            'status'      => $member->status,
+            'permissions' => $member->role->getPermissionSlugs(),
+        ]);
+    }
+
+    /**
+     * @throws InsufficientPermissionsException
+     */
     public function index(Guild $guild): JsonResponse
     {
+        $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
+        $this->permissionGate->authorize($actorMember, GuildPermission::IsGuildMember);
+
         $members = $this->memberService->getActiveMembersWithRoles($guild->id);
         return response()->json(GuildMemberResource::collection($members));
     }
 
+    /**
+     * @throws MemberAlreadyExistsException
+     */
     public function join(Guild $guild): JsonResponse
     {
         $member = $this->joinProcess->execute($guild, auth()->id());
         return response()->json(new GuildMemberResource($member), 201);
     }
 
+    /**
+     * @throws MemberAlreadyExistsException
+     * @throws InsufficientPermissionsException
+     */
     public function invite(Request $request, Guild $guild): JsonResponse
     {
         $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
@@ -56,6 +88,9 @@ class GuildMemberController extends Controller
         return response()->json(new GuildMemberResource($member), 201);
     }
 
+    /**
+     * @throws InsufficientPermissionsException
+     */
     public function approve(Guild $guild, GuildMember $member): JsonResponse
     {
         $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
@@ -65,6 +100,9 @@ class GuildMemberController extends Controller
         return response()->json(new GuildMemberResource($member));
     }
 
+    /**
+     * @throws InsufficientPermissionsException
+     */
     public function reject(Guild $guild, GuildMember $member): JsonResponse
     {
         $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
@@ -74,6 +112,10 @@ class GuildMemberController extends Controller
         return response()->json(new GuildMemberResource($member));
     }
 
+    /**
+     * @throws InsufficientPermissionsException
+     * @throws CannotKickLeaderException
+     */
     public function kick(Guild $guild, GuildMember $member): JsonResponse
     {
         $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
@@ -83,6 +125,9 @@ class GuildMemberController extends Controller
         return response()->json(new GuildMemberResource($member));
     }
 
+    /**
+     * @throws InsufficientPermissionsException
+     */
     public function updateRole(UpdateMemberRoleRequest $request, Guild $guild, GuildMember $member): JsonResponse
     {
         $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
@@ -92,6 +137,9 @@ class GuildMemberController extends Controller
         return response()->json(new GuildMemberResource($member));
     }
 
+    /**
+     * @throws InsufficientPermissionsException
+     */
     public function transferLeadership(Request $request, Guild $guild): JsonResponse
     {
         $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());

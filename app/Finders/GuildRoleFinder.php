@@ -14,9 +14,7 @@ class GuildRoleFinder
 
     public function findByGuild(int $guildId): Collection
     {
-        return GuildRole::with('permissions')
-            ->where('guild_id', $guildId)
-            ->get();
+        return GuildRole::where('guild_id', $guildId)->get();
     }
 
     public function findLeaderRoleByGuild(int $guildId): GuildRole

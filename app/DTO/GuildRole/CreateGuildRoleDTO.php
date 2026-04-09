@@ -7,6 +7,6 @@ readonly class CreateGuildRoleDTO
     public function __construct(
         public int $guild_id,
         public string $name,
-        public array $permission_ids,
+        public array $permission_slugs = [],
     ) {}
 }

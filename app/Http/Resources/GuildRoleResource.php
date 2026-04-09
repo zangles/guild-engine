@@ -14,9 +14,7 @@ class GuildRoleResource extends JsonResource
             'guild_id'    => $this->guild_id,
             'name'        => $this->name,
             'is_system'   => $this->is_system,
-            'permissions' => $this->whenLoaded('permissions', fn () =>
-                $this->permissions->map(fn ($p) => ['id' => $p->id, 'slug' => $p->slug, 'name' => $p->name])
-            ),
+            'permissions' => $this->resource->getPermissionSlugs(),
             'created_at'  => $this->created_at,
         ];
     }

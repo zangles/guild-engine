@@ -31,6 +31,7 @@ Route::middleware('auth:api')->group(function () {
 
     // Guild Members
     Route::prefix('guilds/{guild}')->group(function () {
+        Route::get('me',                                            [GuildMemberController::class, 'me']);
         Route::get('members',                                       [GuildMemberController::class, 'index']);
         Route::post('join',                                         [GuildMemberController::class, 'join']);
         Route::post('invite',                                       [GuildMemberController::class, 'invite']);

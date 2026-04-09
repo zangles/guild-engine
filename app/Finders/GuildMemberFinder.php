@@ -10,7 +10,7 @@ class GuildMemberFinder
 {
     public function findActiveByGuildAndUser(int $guildId, int $userId): ?GuildMember
     {
-        return GuildMember::with('role.permissions')
+        return GuildMember::with('role')
             ->where('guild_id', $guildId)
             ->where('user_id', $userId)
             ->where('status', GuildMemberStatus::Active)

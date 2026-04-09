@@ -8,23 +8,15 @@ use App\Repositories\GuildRoleRepository;
 
 class CreateGuildRoleAction
 {
-    public function __construct(
-        private GuildRoleRepository $repository,
-        private SyncRolePermissionsAction $syncPermissions,
-    ) {}
+    public function __construct(private GuildRoleRepository $repository) {}
 
     public function handle(CreateGuildRoleDTO $dto, bool $isSystem = false): GuildRole
     {
-        $role = $this->repository->create([
-            'guild_id'  => $dto->guild_id,
-            'name'      => $dto->name,
-            'is_system' => $isSystem,
+        return $this->repository->create([
+            'guild_id'    => $dto->guild_id,
+            'name'        => $dto->name,
+            'is_system'   => $isSystem,
+            'permissions' => $isSystem ? null : ($dto->permission_slugs ?: null),
         ]);
-
-        if (!empty($dto->permission_ids)) {
-            $this->syncPermissions->handle($role, $dto->permission_ids);
-        }
-
-        return $role;
     }
 }

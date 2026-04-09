@@ -27,6 +27,9 @@ class GuildRoleController extends Controller
 
     public function index(Guild $guild): JsonResponse
     {
+        $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
+        $this->permissionGate->authorize($actorMember, GuildPermission::ManageRoles);
+
         $roles = $this->roleService->findByGuild($guild->id);
         return response()->json(GuildRoleResource::collection($roles));
     }
@@ -36,7 +39,7 @@ class GuildRoleController extends Controller
         $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
         $this->permissionGate->authorize($actorMember, GuildPermission::ManageRoles);
 
-        $dto  = new CreateGuildRoleDTO($guild->id, $request->name, $request->input('permission_ids', []));
+        $dto  = new CreateGuildRoleDTO($guild->id, $request->name, $request->input('permission_slugs', []));
         $role = $this->roleService->createCustomRole($dto);
 
         return response()->json(new GuildRoleResource($role), 201);
@@ -47,10 +50,9 @@ class GuildRoleController extends Controller
         $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
         $this->permissionGate->authorize($actorMember, GuildPermission::ManageRoles);
 
-        $dto = new UpdateGuildRoleDTO($request->permission_ids);
+        $dto = new UpdateGuildRoleDTO($request->permission_slugs);
         $this->roleService->updatePermissions($role, $dto);
 
-        $role->load('permissions');
-        return response()->json(new GuildRoleResource($role));
+        return response()->json(new GuildRoleResource($role->fresh()));
     }
 }

@@ -8,13 +8,9 @@ use App\Models\Main\GuildMember;
 
 class GuildPermissionGate
 {
-    public function authorize(GuildMember $member, GuildPermission $permission): void
+    public function authorize(?GuildMember $member, GuildPermission $permission): void
     {
-        // $member debe venir con role.permissions eager-loaded
-        $hasPermission = $member->role->permissions
-            ->contains('slug', $permission->value);
-
-        if (!$hasPermission) {
+        if (!$member || !$member->role->hasPermission($permission)) {
             throw new InsufficientPermissionsException();
         }
     }

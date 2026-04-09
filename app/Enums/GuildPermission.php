@@ -14,4 +14,5 @@ enum GuildPermission: string
     case ViewAuditLog       = 'view_audit_log';
     case ManageRoles        = 'manage_roles';
     case TransferLeadership = 'transfer_leadership';
+    case IsGuildMember      = 'is_guild_member';
 }
