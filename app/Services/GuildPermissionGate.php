@@ -8,9 +8,11 @@ use App\Models\Main\GuildMember;
 
 class GuildPermissionGate
 {
+    public function __construct(private GuildRoleService $roleService) {}
+
     public function authorize(?GuildMember $member, GuildPermission $permission): void
     {
-        if (!$member || !$member->role->hasPermission($permission)) {
+        if (!$member || !$this->roleService->hasPermission($member->role, $permission)) {
             throw new InsufficientPermissionsException();
         }
     }

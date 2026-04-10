@@ -14,6 +14,7 @@ use App\Models\Main\Guild;
 use App\Models\Main\GuildMember;
 use App\Services\GuildMemberService;
 use App\Services\GuildPermissionGate;
+use App\Services\GuildRoleService;
 use App\UseCases\GuildMember\ApproveMemberProcess;
 use App\UseCases\GuildMember\InviteMemberProcess;
 use App\UseCases\GuildMember\JoinGuildProcess;
@@ -28,6 +29,7 @@ class GuildMemberController extends Controller
         private GuildMemberFinder $memberFinder,
         private GuildMemberService $memberService,
         private GuildPermissionGate $permissionGate,
+        private GuildRoleService $roleService,
         private JoinGuildProcess $joinProcess,
         private InviteMemberProcess $inviteProcess,
         private ApproveMemberProcess $approveProcess,
@@ -48,7 +50,7 @@ class GuildMemberController extends Controller
             'id'          => $member->id,
             'role'        => $member->role->name,
             'status'      => $member->status,
-            'permissions' => $member->role->getPermissionSlugs(),
+            'permissions' => $this->roleService->getPermissionSlugs($member->role),
         ]);
     }
 
