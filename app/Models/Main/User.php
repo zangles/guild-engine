@@ -21,33 +21,5 @@ class User extends Authenticatable
         ];
     }
 
-    public function guildMembers()
-    {
-        return $this->hasMany(GuildMember::class);
-    }
 
-    public function receivedDkp()
-    {
-        return $this->hasMany(DkpTransaction::class, 'target_user_id');
-    }
-
-    public function grantedDkp()
-    {
-        return $this->hasMany(DkpTransaction::class, 'actor_user_id');
-    }
-
-    public function donations()
-    {
-        return $this->hasMany(Donation::class);
-    }
-
-    public function auditLogs()
-    {
-        return $this->hasMany(AuditLog::class, 'actor_user_id');
-    }
-
-    public function eventRsvps()
-    {
-        return $this->hasMany(EventRsvp::class);
-    }
 }

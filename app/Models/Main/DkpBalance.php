@@ -17,13 +17,5 @@ class DkpBalance extends Model
         ];
     }
 
-    public function guild()
-    {
-        return $this->belongsTo(Guild::class);
-    }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

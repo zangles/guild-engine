@@ -4,17 +4,23 @@ namespace App\Finders;
 
 use App\Enums\GuildMemberStatus;
 use App\Models\Main\GuildMember;
+use App\Models\Main\GuildRole;
 use Illuminate\Database\Eloquent\Collection;
 
 class GuildMemberFinder
 {
     public function findActiveByGuildAndUser(int $guildId, int $userId): ?GuildMember
     {
-        return GuildMember::with('role')
-            ->where('guild_id', $guildId)
+        $member = GuildMember::where('guild_id', $guildId)
             ->where('user_id', $userId)
             ->where('status', GuildMemberStatus::Active)
             ->first();
+
+        if ($member) {
+            $member->setRelation('role', GuildRole::find($member->guild_role_id));
+        }
+
+        return $member;
     }
 
     public function findByGuildAndUser(int $guildId, int $userId): ?GuildMember

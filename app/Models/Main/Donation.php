@@ -25,18 +25,5 @@ class Donation extends Model
         ];
     }
 
-    public function guild()
-    {
-        return $this->belongsTo(Guild::class);
-    }
 
-    public function donor()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function reviewedBy()
-    {
-        return $this->belongsTo(User::class, 'reviewed_by_user_id');
-    }
 }

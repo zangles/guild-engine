@@ -3,6 +3,7 @@
 namespace App\Queries;
 
 use App\Models\Main\Guild;
+use App\Models\Main\GuildMember;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class GuildQueries
@@ -17,15 +18,15 @@ class GuildQueries
 
     public function getPublicProfile(int $guildId): array
     {
-        $guild = Guild::withCount(['members' => fn ($q) => $q->where('status', 'active')])
-            ->findOrFail($guildId);
+        $guild = Guild::findOrFail($guildId);
+        $membersCount = GuildMember::where('guild_id', $guildId)->where('status', 'active')->count();
 
         return [
             'id'            => $guild->id,
             'name'          => $guild->name,
             'description'   => $guild->description,
             'game'          => $guild->game,
-            'members_count' => $guild->members_count,
+            'members_count' => $membersCount,
             'created_at'    => $guild->created_at,
         ];
     }

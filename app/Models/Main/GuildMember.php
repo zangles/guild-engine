@@ -24,23 +24,5 @@ class GuildMember extends Model
         ];
     }
 
-    public function guild()
-    {
-        return $this->belongsTo(Guild::class);
-    }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function role()
-    {
-        return $this->belongsTo(GuildRole::class, 'guild_role_id');
-    }
-
-    public function invitedBy()
-    {
-        return $this->belongsTo(User::class, 'invited_by_user_id');
-    }
 }

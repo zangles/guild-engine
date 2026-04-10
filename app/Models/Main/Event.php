@@ -29,18 +29,5 @@ class Event extends Model
         ];
     }
 
-    public function guild()
-    {
-        return $this->belongsTo(Guild::class);
-    }
 
-    public function createdBy()
-    {
-        return $this->belongsTo(User::class, 'created_by_user_id');
-    }
-
-    public function rsvps()
-    {
-        return $this->hasMany(EventRsvp::class);
-    }
 }

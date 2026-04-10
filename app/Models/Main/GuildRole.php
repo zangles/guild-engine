@@ -36,13 +36,5 @@ class GuildRole extends Model
         return $this->permissions ?? [];
     }
 
-    public function guild()
-    {
-        return $this->belongsTo(Guild::class);
-    }
 
-    public function members()
-    {
-        return $this->hasMany(GuildMember::class);
-    }
 }
