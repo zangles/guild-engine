@@ -20,6 +20,7 @@ class GuildMemberResource extends JsonResource
             'created_at'          => $this->created_at,
             'user'                => new UserResource($this->whenLoaded('user')),
             'role'                => new GuildRoleResource($this->whenLoaded('role')),
+            'guild'               => new GuildResource($this->whenLoaded('guild')),
         ];
     }
 }

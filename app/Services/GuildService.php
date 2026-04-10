@@ -10,6 +10,7 @@ use App\Finders\GuildFinder;
 use App\Models\Main\Guild;
 use App\Queries\GuildQueries;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class GuildService
 {
@@ -43,5 +44,10 @@ class GuildService
     public function update(Guild $guild, UpdateGuildDTO $dto): Guild
     {
         return $this->updateAction->handle($guild, $dto);
+    }
+
+    public function getActiveGuildsForUser(int $userId): Collection
+    {
+        return $this->finder->getActiveGuildsForUser($userId);
     }
 }

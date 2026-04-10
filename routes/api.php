@@ -26,6 +26,7 @@ Route::get('guilds/{guild}',  [GuildController::class, 'show']);
 Route::middleware('auth:api')->group(function () {
 
     // Guilds
+    Route::get('me/guilds',         [GuildController::class, 'myGuilds']);
     Route::post('guilds',           [GuildController::class, 'store']);
     Route::put('guilds/{guild}',    [GuildController::class, 'update']);
 
