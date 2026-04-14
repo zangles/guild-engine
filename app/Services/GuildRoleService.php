@@ -52,11 +52,7 @@ class GuildRoleService
 
     public function getPermissionSlugs(GuildRole $role): array
     {
-        if ($role->is_system) {
-            return array_map(fn ($p) => $p->value, SystemRole::from($role->name)->permissions());
-        }
-
-        return $role->permissions ?? [];
+        return $role->getPermissionSlugs();
     }
 
     public function updatePermissions(GuildRole $role, UpdateGuildRoleDTO $dto): void

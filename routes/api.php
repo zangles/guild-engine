@@ -34,6 +34,7 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('guilds/{guild}')->group(function () {
         Route::get('me',                                            [GuildMemberController::class, 'me']);
         Route::get('members',                                       [GuildMemberController::class, 'index']);
+        Route::get('members/{member}',                              [GuildMemberController::class, 'show']);
         Route::post('join',                                         [GuildMemberController::class, 'join']);
         Route::post('invite',                                       [GuildMemberController::class, 'invite']);
         Route::post('members/{member}/approve',                     [GuildMemberController::class, 'approve']);
@@ -45,11 +46,13 @@ Route::middleware('auth:api')->group(function () {
         // Guild Roles
         Route::get('roles',           [GuildRoleController::class, 'index']);
         Route::post('roles',          [GuildRoleController::class, 'store']);
+        Route::get('roles/{role}',    [GuildRoleController::class, 'show']);
         Route::put('roles/{role}',    [GuildRoleController::class, 'update']);
 
         // Events
         Route::get('events',                                        [EventController::class, 'index']);
         Route::post('events',                                       [EventController::class, 'store']);
+        Route::get('events/{event}',                                [EventController::class, 'show']);
         Route::post('events/{event}/cancel',                        [EventController::class, 'cancel']);
         Route::post('events/{event}/attendance',                    [EventController::class, 'registerAttendance']);
         Route::put('events/{event}/rsvp',                           [EventRsvpController::class, 'upsert']);
@@ -64,9 +67,11 @@ Route::middleware('auth:api')->group(function () {
         Route::get('donations',                                     [DonationController::class, 'index']);
         Route::get('donations/history',                             [DonationController::class, 'history']);
         Route::post('donations',                                    [DonationController::class, 'store']);
+        Route::get('donations/{donation}',                          [DonationController::class, 'show']);
         Route::patch('donations/{donation}/review',                 [DonationController::class, 'review']);
 
         // Audit Log
         Route::get('audit-log',                                     [AuditLogController::class, 'index']);
+        Route::get('audit-log/{log}',                               [AuditLogController::class, 'show']);
     });
 });

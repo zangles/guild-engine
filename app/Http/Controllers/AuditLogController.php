@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\GuildPermission;
 use App\Finders\GuildMemberFinder;
 use App\Http\Resources\AuditLogResource;
+use App\Models\Main\AuditLog;
 use App\Models\Main\Guild;
 use App\Services\AuditLogService;
 use App\Services\GuildPermissionGate;
@@ -25,5 +26,13 @@ class AuditLogController extends Controller
 
         $logs = $this->auditLogService->getByGuild($guild->id);
         return response()->json(AuditLogResource::collection($logs)->response()->getData(true));
+    }
+
+    public function show(Guild $guild, AuditLog $log): JsonResponse
+    {
+        $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
+        $this->permissionGate->authorize($actorMember, GuildPermission::ViewAuditLog);
+
+        return response()->json(new AuditLogResource($log));
     }
 }

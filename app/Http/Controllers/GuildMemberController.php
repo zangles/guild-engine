@@ -12,6 +12,8 @@ use App\Http\Requests\GuildMember\UpdateMemberRoleRequest;
 use App\Http\Resources\GuildMemberResource;
 use App\Models\Main\Guild;
 use App\Models\Main\GuildMember;
+use App\Models\Main\GuildRole;
+use App\Models\Main\User;
 use App\Services\GuildMemberService;
 use App\Services\GuildPermissionGate;
 use App\Services\GuildRoleService;
@@ -64,6 +66,17 @@ class GuildMemberController extends Controller
 
         $members = $this->memberService->getActiveMembersWithRoles($guild->id);
         return response()->json(GuildMemberResource::collection($members));
+    }
+
+    public function show(Guild $guild, GuildMember $member): JsonResponse
+    {
+        $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
+        $this->permissionGate->authorize($actorMember, GuildPermission::IsGuildMember);
+
+        $member->setRelation('user', User::find($member->user_id));
+        $member->setRelation('role', GuildRole::find($member->guild_role_id));
+
+        return response()->json(new GuildMemberResource($member));
     }
 
     /**

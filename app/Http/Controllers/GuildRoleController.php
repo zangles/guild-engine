@@ -34,6 +34,14 @@ class GuildRoleController extends Controller
         return response()->json(GuildRoleResource::collection($roles));
     }
 
+    public function show(Guild $guild, GuildRole $role): JsonResponse
+    {
+        $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
+        $this->permissionGate->authorize($actorMember, GuildPermission::ManageRoles);
+
+        return response()->json(new GuildRoleResource($role));
+    }
+
     public function store(CreateGuildRoleRequest $request, Guild $guild): JsonResponse
     {
         $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());

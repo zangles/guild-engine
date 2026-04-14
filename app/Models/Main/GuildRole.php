@@ -2,6 +2,7 @@
 
 namespace App\Models\Main;
 
+use App\Enums\SystemRole;
 use Illuminate\Database\Eloquent\Model;
 
 class GuildRole extends Model
@@ -16,6 +17,12 @@ class GuildRole extends Model
         ];
     }
 
+    public function getPermissionSlugs(): array
+    {
+        if ($this->is_system) {
+            return array_map(fn ($p) => $p->value, SystemRole::from($this->name)->permissions());
+        }
 
-
+        return $this->permissions ?? [];
+    }
 }

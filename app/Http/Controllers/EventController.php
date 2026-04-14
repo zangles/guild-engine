@@ -32,6 +32,14 @@ class EventController extends Controller
         return response()->json(EventResource::collection($events)->response()->getData(true));
     }
 
+    public function show(Guild $guild, Event $event): JsonResponse
+    {
+        $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
+        $this->permissionGate->authorize($actorMember, GuildPermission::IsGuildMember);
+
+        return response()->json(new EventResource($event));
+    }
+
     public function store(CreateEventRequest $request, Guild $guild): JsonResponse
     {
         $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());

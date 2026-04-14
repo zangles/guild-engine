@@ -13,6 +13,7 @@ use App\Http\Requests\Donation\ReviewDonationRequest;
 use App\Http\Resources\DonationResource;
 use App\Models\Main\Donation;
 use App\Models\Main\Guild;
+use App\Models\Main\User;
 use App\Services\DonationService;
 use App\Services\GuildPermissionGate;
 use Illuminate\Http\JsonResponse;
@@ -39,6 +40,19 @@ class DonationController extends Controller
     {
         $donations = $this->donationService->getApprovedHistory($guild->id);
         return response()->json(DonationResource::collection($donations)->response()->getData(true));
+    }
+
+    public function show(Guild $guild, Donation $donation): JsonResponse
+    {
+        $actorMember = $this->memberFinder->findActiveByGuildAndUser($guild->id, auth()->id());
+
+        if ($donation->user_id !== auth()->id()) {
+            $this->permissionGate->authorize($actorMember, GuildPermission::ManageDonations);
+        }
+
+        $donation->setRelation('donor', User::find($donation->user_id));
+
+        return response()->json(new DonationResource($donation));
     }
 
     public function store(CreateDonationRequest $request, Guild $guild): JsonResponse

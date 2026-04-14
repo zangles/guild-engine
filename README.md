@@ -9,6 +9,7 @@ API REST para la gestión de guilds de videojuegos. Construida con **Laravel 13*
 Funcionalidades principales: gestión de miembros y roles, eventos con RSVP, sistema de DKP, donaciones, log de auditoría e integración con Discord.
 
 > Para instrucciones de instalación y configuración del entorno, ver [INSTALL.md](INSTALL.md).
+> Para la documentación detallada de cada endpoint (parámetros, tipos, respuestas), ver [APIDOC.md](APIDOC.md).
 
 ---
 
